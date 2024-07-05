@@ -20,14 +20,17 @@ public class BulletController : MonoBehaviour
     private void Start()
     {
         //_rigidbody.velocity = Vector3.forward * speed * Time.deltaTime;
-        _rigidbody.velocity = transform.forward * speed * Time.deltaTime;
+        _rigidbody.position += transform.forward.normalized * speed * Time.deltaTime;
     }
 
     private void OnCollisionEnter(Collision other)
     {
         if ((targetMask & (1 << other.gameObject.layer)) != 0) 
         {
-            Destroy(other.gameObject);
+            if (other.gameObject.CompareTag("Enemy") && other.gameObject != null)
+            {
+                Destroy(other.gameObject);
+            }
         }
 
         Destroy(gameObject);

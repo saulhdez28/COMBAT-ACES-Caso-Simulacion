@@ -7,6 +7,11 @@ public class SpawnManager : MonoBehaviour
     [SerializeField]
     GameObject[] spawningPrefabs;
 
+
+    [SerializeField]
+    GameObject[] spawnBossPrefabs;
+
+
     [SerializeField]
     int maxSpawningAmount;
 
@@ -19,13 +24,25 @@ public class SpawnManager : MonoBehaviour
     [SerializeField]
     Transform target;
 
+    private GameObject[] enemiesNonBossList;
+    private GameObject[] enemieBoss;
+
+
     private void Start()
     {
+        if (enemiesNonBossList != null)
+        {
+            enemiesNonBossList = GameObject.FindGameObjectsWithTag("Enemy");
+        }
+        if (enemieBoss != null)
+        {
+            enemieBoss = GameObject.FindGameObjectsWithTag("Boss");
+        }
         Spawn();
     }
 
     private void Spawn()
-    {
+    {       
         for (int spawningIndex = 0; spawningIndex < maxSpawningAmount;  spawningIndex++)
         {
             Vector3 spawningPoint = Vector3.zero;
@@ -40,7 +57,25 @@ public class SpawnManager : MonoBehaviour
             chaseController.SetTarget(target);
             spawningObject.transform.parent = transform;
         }
+        if (enemiesNonBossList.Length == 0)
+        {
+            //if (enemieBoss.Length < 0)
+            //{
+            //    return;
+            //}
+            Vector3 spawnPoint = Vector3.zero;
+            while (Vector3.Distance(spawnPoint, Vector3.zero) < spawningSafeRange)
+            {
+                spawnPoint = GetSpawningPoint();
 
+            }
+
+            GameObject spawnBossPrefab = spawnBossPrefabs[Random.Range(0, spawnBossPrefabs.Length)];
+            GameObject spawnBossObject = Instantiate(spawnBossPrefab, spawnPoint, Quaternion.identity);
+            ChaseController chaseController = spawnBossObject.GetComponent<ChaseController>();
+            chaseController.SetTarget(target);
+            spawnBossObject.transform.parent = transform;
+        }
     }
 
     private Vector3 GetSpawningPoint()

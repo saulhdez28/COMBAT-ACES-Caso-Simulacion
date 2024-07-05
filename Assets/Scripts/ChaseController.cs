@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static UnityEngine.GraphicsBuffer;
 
 public class ChaseController : MonoBehaviour
 {
@@ -14,22 +13,40 @@ public class ChaseController : MonoBehaviour
     [SerializeField]
     float speed;
 
+    [SerializeField]
+    float stopDistance;
+
+    public bool moving;
+
     private void Awake()
     {
         _rigidbody = GetComponent<Rigidbody>();
     }
 
-    public void SetTarget (Transform target)
+    public void SetTarget(Transform target)
     {
         _target = target;
-        transform.LookAt(target.position);
-
     }
 
     private void FixedUpdate()
     {
-        
-        _rigidbody.position = Vector3.MoveTowards(_rigidbody.position, _target.position, speed * Time.fixedDeltaTime);
+        Follow_Unfollow();
+    }
+
+    private void Follow_Unfollow()
+    {
+        float distance = Vector3.Distance(_rigidbody.position, _target.position);
+
+        if (_target != null && distance > stopDistance)
+        {
+            moving = true;
+            _rigidbody.position = Vector3.MoveTowards(_rigidbody.position, _target.position, speed * Time.fixedDeltaTime);
+        }
+        else
+        {
+            moving = false;
+        }
+
         transform.LookAt(_target.position);
     }
 
@@ -41,6 +58,5 @@ public class ChaseController : MonoBehaviour
         }
 
         Destroy(gameObject);
-
     }
 }
