@@ -11,6 +11,9 @@ public class FireController : MonoBehaviour
     GameObject bulletPrefab;
 
     [SerializeField]
+    GameObject bulletEnemyPrefab;
+
+    [SerializeField]
     float fireDelay;
 
     [SerializeField]
@@ -26,7 +29,7 @@ public class FireController : MonoBehaviour
             _currentTime = 0.0F;
         }
 
-        if (Input.GetButtonDown("Fire1"))
+        if (Input.GetButtonDown("Fire1") && gameObject.CompareTag("Player"))
         {
 
             if (_currentTime > 0.0F) 
@@ -41,6 +44,21 @@ public class FireController : MonoBehaviour
 
             _currentTime = fireDelay;
             
+        }
+        if (gameObject.CompareTag("Boss") && gameObject.GetComponent<ChaseController>().moving == false)
+        {
+            if (_currentTime > 0.0F)
+            {
+                return;
+            }
+            foreach (Transform firepoint in firepoints)
+            {
+                GameObject Enemybullet = Instantiate(bulletEnemyPrefab, firepoint.position, firepoint.rotation);
+                Enemybullet.GetComponent<BulletController>().SetTarget(gameObject.transform);
+                Destroy(Enemybullet.gameObject, lifeTimeout);
+            }
+
+            _currentTime = fireDelay;
         }
     }
 }

@@ -114,6 +114,8 @@ MonoBehaviour:
     m_Bits: 8
   speed: 5
   stopDistance: 0
+  tooCloseDistance: 0
+  rotationSpeed: 5
   moving: 0
 --- !u!1001 &7063065275841836122
 PrefabInstance:

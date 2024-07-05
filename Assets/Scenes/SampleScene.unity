@@ -139,7 +139,7 @@ GameObject:
   - component: {fileID: 41614420}
   m_Layer: 3
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -156,7 +156,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5413f9dccad192e47a7b76c8a5be2690, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  forwardSpeed: 40
+  forwardSpeed: 100
   strafeSpeed: 15
   hoverSpeed: 8.5
   forwardAcceleration: 2.5
@@ -229,6 +229,7 @@ MonoBehaviour:
   - {fileID: 178783649}
   bulletPrefab: {fileID: 101645094167814677, guid: 190f19dd035629c40bff0e251bc1d01b,
     type: 3}
+  bulletEnemyPrefab: {fileID: 0}
   fireDelay: 0.25
   lifeTimeout: 10
 --- !u!1001 &80100067
@@ -667,10 +668,11 @@ MonoBehaviour:
   - {fileID: 9217434236347202142, guid: 34a868cb7b7d9d14fab089ab3174e83b, type: 3}
   spawnBossPrefabs:
   - {fileID: 2859679053423741314, guid: 7f0a81cac2bc8994b96fef023830e718, type: 3}
-  maxSpawningAmount: 1
-  spawningRange: 50
-  spawningSafeRange: 25
+  maxSpawningAmount: 5
+  spawningRange: 250
+  spawningSafeRange: 50
   target: {fileID: 41614417}
+  BossInGame: 0
 --- !u!4 &1260912318
 Transform:
   m_ObjectHideFlags: 0

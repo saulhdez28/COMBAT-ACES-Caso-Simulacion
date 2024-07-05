@@ -8,10 +8,10 @@ public class HealthController : MonoBehaviour
     [SerializeField]
     float health;
 
-    public void takeDamage()
+    public void takeDamage(float healtoDeal)
     {
-        health -= 1;
-
+        health = health - healtoDeal;
+        print(health);
         if (health <= 0)
         {
             Destroy(gameObject);

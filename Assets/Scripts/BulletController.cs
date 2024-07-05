@@ -10,6 +10,9 @@ public class BulletController : MonoBehaviour
     [SerializeField]
     float speed;
 
+    [SerializeField]
+    Transform shoting;
+
     Rigidbody _rigidbody;
 
     private void Awake()
@@ -20,21 +23,30 @@ public class BulletController : MonoBehaviour
     private void Start()
     {
         //_rigidbody.velocity = Vector3.forward * speed * Time.deltaTime;
-        _rigidbody.position += transform.forward.normalized * speed * Time.deltaTime;
+        _rigidbody.velocity = transform.forward * speed;
     }
 
     private void OnCollisionEnter(Collision other)
     {
-        if ((targetMask & (1 << other.gameObject.layer)) != 0) 
+        if (other.gameObject.CompareTag("Enemy") || other.gameObject.CompareTag("Player"))
         {
-            if (other.gameObject.CompareTag("Enemy") && other.gameObject != null)
+            Destroy(other.gameObject);
+        }
+        else if (other.gameObject.CompareTag("Boss"))
+        {
+            HealthController healthController = other.gameObject.GetComponent<HealthController>();
+            if (healthController != null)
             {
-                Destroy(other.gameObject);
+                healthController.takeDamage(1.0f);
             }
         }
 
         Destroy(gameObject);
 
     }
+    public void SetTarget(Transform shooter)
+    {
+        shoting = shooter;
 
+    }
 }

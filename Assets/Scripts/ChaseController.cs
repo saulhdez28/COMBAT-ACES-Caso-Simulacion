@@ -8,7 +8,6 @@ public class ChaseController : MonoBehaviour
     LayerMask targetMask;
 
     Transform _target;
-    Rigidbody _rigidbody;
 
     [SerializeField]
     float speed;
@@ -16,18 +15,24 @@ public class ChaseController : MonoBehaviour
     [SerializeField]
     float stopDistance;
 
-    public bool moving;
+    [SerializeField]
+    float tooCloseDistance;
 
-    private void Awake()
-    {
-        _rigidbody = GetComponent<Rigidbody>();
-    }
+    [SerializeField]
+    float rotationSpeed;
+
+
+    public bool moving;
 
     public void SetTarget(Transform target)
     {
         _target = target;
     }
 
+    private void Awake()
+    {
+        Rigidbody _rigidbody = GetComponent<Rigidbody>();
+    }
     private void FixedUpdate()
     {
         Follow_Unfollow();
@@ -35,21 +40,35 @@ public class ChaseController : MonoBehaviour
 
     private void Follow_Unfollow()
     {
-        float distance = Vector3.Distance(_rigidbody.position, _target.position);
+        if (_target == null)
+            return;
 
-        if (_target != null && distance > stopDistance)
+        float distance = Vector3.Distance(transform.position, _target.position);
+
+        if (distance > stopDistance)
         {
             moving = true;
-            _rigidbody.position = Vector3.MoveTowards(_rigidbody.position, _target.position, speed * Time.fixedDeltaTime);
+            transform.position = Vector3.MoveTowards(transform.position, _target.position, speed * Time.fixedDeltaTime);
+        }
+        else if (distance < tooCloseDistance)
+        {
+            moving = true;
+            Vector3 direction = (transform.position - _target.position).normalized;
+            transform.position = Vector3.MoveTowards(transform.position, transform.position + direction, speed * Time.fixedDeltaTime);
         }
         else
         {
             moving = false;
         }
 
-        transform.LookAt(_target.position);
+        RotateTowardsTarget();
     }
-
+    private void RotateTowardsTarget()
+    {
+        Vector3 direction = (_target.position - transform.position).normalized;
+        Quaternion lookRotation = Quaternion.LookRotation(direction);
+        transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, rotationSpeed * Time.deltaTime);
+    }
     private void OnCollisionEnter(Collision other)
     {
         if ((targetMask & (1 << other.gameObject.layer)) != 0)
@@ -57,6 +76,5 @@ public class ChaseController : MonoBehaviour
             Destroy(other.gameObject);
         }
 
-        Destroy(gameObject);
     }
 }

@@ -25,22 +25,21 @@ public class SpawnManager : MonoBehaviour
     Transform target;
 
     private GameObject[] enemiesNonBossList;
-    private GameObject[] enemieBoss;
+    public bool BossInGame;
 
 
     private void Start()
     {
-        if (enemiesNonBossList != null)
-        {
-            enemiesNonBossList = GameObject.FindGameObjectsWithTag("Enemy");
-        }
-        if (enemieBoss != null)
-        {
-            enemieBoss = GameObject.FindGameObjectsWithTag("Boss");
-        }
         Spawn();
+        BossInGame = true;
     }
 
+
+    private void Update()
+    {
+        enemiesNonBossList = GameObject.FindGameObjectsWithTag("Enemy");
+        Boss();
+    }
     private void Spawn()
     {       
         for (int spawningIndex = 0; spawningIndex < maxSpawningAmount;  spawningIndex++)
@@ -57,12 +56,12 @@ public class SpawnManager : MonoBehaviour
             chaseController.SetTarget(target);
             spawningObject.transform.parent = transform;
         }
-        if (enemiesNonBossList.Length == 0)
+    }
+
+    private void Boss()
+    {
+        if(enemiesNonBossList.Length == 0 && GameObject.FindGameObjectsWithTag("Boss").Length < 1 && BossInGame)
         {
-            //if (enemieBoss.Length < 0)
-            //{
-            //    return;
-            //}
             Vector3 spawnPoint = Vector3.zero;
             while (Vector3.Distance(spawnPoint, Vector3.zero) < spawningSafeRange)
             {
@@ -75,6 +74,8 @@ public class SpawnManager : MonoBehaviour
             ChaseController chaseController = spawnBossObject.GetComponent<ChaseController>();
             chaseController.SetTarget(target);
             spawnBossObject.transform.parent = transform;
+            BossInGame = false;
+
         }
     }
 
